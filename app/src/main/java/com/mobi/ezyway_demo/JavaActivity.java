@@ -93,7 +93,7 @@ public class JavaActivity extends AppCompatActivity {
         edit_email.setText("karthik@mobiversa.com");
         edit_orderDesc.setText("Android Description");
 
-        PaymentActivity.Companion.getInstance(getApplicationContext(), paymentResponse);
+        PaymentActivity.Companion.getInstance(getApplicationContext(), paymentResponse,true);
         PaymentActivity pay = new PaymentActivity();
 
 

@@ -14,8 +14,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class BoostActivity : AppCompatActivity() {
 
-    var mobiApiKey = "b07ad9f31df158edb188a41f725899bc" //Sandbox
-    val loginId = "Mobiversa" //Sandbox
+//    var mobiApiKey = "b07ad9f31df158edb188a41f725899bc" //Sandbox
+//    val loginId = "Mobiversa" //Sandbox
+
+
+    var mobiApiKey = "a787f02ed34fd886eb6d49e60d9c9120" //Live
+    val loginId = "MOBI40008" //Live
 
     var orderId = ""
     var trxId = ""
@@ -25,7 +29,7 @@ class BoostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_boost)
 
-        PaymentActivity.getInstance(this, paymentResponse,false)
+        PaymentActivity.getInstance(this, paymentResponse,true)
         val paymentActivity: PaymentActivity = PaymentActivity()
         val requestMap: HashMap<String, String> = HashMap()
         requestMap["amount"] = "1.00"

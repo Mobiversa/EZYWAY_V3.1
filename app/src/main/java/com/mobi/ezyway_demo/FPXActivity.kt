@@ -33,8 +33,12 @@ import java.net.NetworkInterface
 
 class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    var mobiApiKey = "b07ad9f31df158edb188a41f725899bc" //Sandbox
-    val loginId = "Mobiversa" //Sandbox
+//    var mobiApiKey = "b07ad9f31df158edb188a41f725899bc" //Sandbox
+//    val loginId = "Mobiversa" //Sandbox
+
+
+    var mobiApiKey = "a787f02ed34fd886eb6d49e60d9c9120" //Live
+    val loginId = "MOBI40008" //Live
 
     var bankType = "01"
     var bankName = ""
@@ -55,7 +59,7 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         bank_spnr.adapter = dataAdapter
 
-        PaymentActivity.getInstance(this, paymentResponse,false)
+        PaymentActivity.getInstance(this, paymentResponse, true)
         paymentActivity.jsonBankList()
         btn_submit.setOnClickListener(this)
         radio_group.setOnCheckedChangeListener { group, checkedId ->
@@ -75,20 +79,20 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
         setValues()
     }
 
-    fun getBankList(bankType : String){
-        when(bankType){
+    fun getBankList(bankType: String) {
+        when (bankType) {
             "Retail Banking" -> {
                 bankList.clear()
-               for (data in retailBankList){
-                   bankList.add(data.BankName)
-               }
+                for (data in retailBankList) {
+                    bankList.add(data.BankName)
+                }
                 dataAdapter.notifyDataSetChanged()
             }
             "Corporate Banking" -> {
                 bankList.clear()
-               for (data in corpBankList){
-                   bankList.add(data.BankName)
-               }
+                for (data in corpBankList) {
+                    bankList.add(data.BankName)
+                }
                 dataAdapter.notifyDataSetChanged()
             }
         }
@@ -100,23 +104,23 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
         override fun setSuccess(success: PaymentResult) {
             val responseCode = success.responseCode
             val description = success.responseDescription
-            val mid: String?= success.responseData.mid
-            val tid: String= success.responseData.tid
+            val mid: String? = success.responseData.mid
+            val tid: String = success.responseData.tid
             val amount = success.responseData.amount
-            val date: String?= success.responseData.date
-            val time: String= success.responseData.time
-            val Currency: String?= success.responseData.Currency
-            val BuyerName: String?= success.responseData.BuyerName
-            val BankType: String?= success.responseData.BankType
-            val Bank: String?= success.responseData.Bank
-            val trxId: String?= success.responseData.trxId
-            val IPAddress: String?= success.responseData.IPAddress
-            val MobiLink: String?= success.responseData.MobiLink
-            val MerchantName: String?= success.responseData.MerchantName
-            val DebitAuthCode: String?= success.responseData.DebitAuthCode
-            val DebitAuthCodeString: String?= success.responseData.DebitAuthCodeString
-            val CreditAuthCode: String?= success.responseData.CreditAuthCode
-            val CreditAuthCodeString: String?= success.responseData.CreditAuthCodeString
+            val date: String? = success.responseData.date
+            val time: String = success.responseData.time
+            val Currency: String? = success.responseData.Currency
+            val BuyerName: String? = success.responseData.BuyerName
+            val BankType: String? = success.responseData.BankType
+            val Bank: String? = success.responseData.Bank
+            val trxId: String? = success.responseData.trxId
+            val IPAddress: String? = success.responseData.IPAddress
+            val MobiLink: String? = success.responseData.MobiLink
+            val MerchantName: String? = success.responseData.MerchantName
+            val DebitAuthCode: String? = success.responseData.DebitAuthCode
+            val DebitAuthCodeString: String? = success.responseData.DebitAuthCodeString
+            val CreditAuthCode: String? = success.responseData.CreditAuthCode
+            val CreditAuthCodeString: String? = success.responseData.CreditAuthCodeString
 
         }
 
@@ -126,9 +130,10 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
 
         override fun getBankList(success: BankListModel) {
 
-            if (success.responseCode.equals("0000")){
-                retailBankList =  success.responseDataB2C.bankList
-                corpBankList =  success.responseDataB2B.bankList
+            if (success.responseCode.equals("0000")) {
+                retailBankList = success.responseDataB2C.bankList
+                corpBankList = success.responseDataB2B.bankList
+
             }
 
             if (corparate_RB.isChecked)
@@ -148,7 +153,7 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
     }
 
 
-    private fun setValues(){
+    private fun setValues() {
         edit_ip.setText(getLocalIpAddress())
         edit_passport.setText("N1234567")
         edit_country.setText("Malaysia")
@@ -198,9 +203,13 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val item = parent!!.getItemAtPosition(position).toString()
         if (retail_RB.isChecked)
-            bankName = retailBankList[position].BankCode
-        else
-            bankName = corpBankList[position].BankCode
+            if (retailBankList[position].Active.equals("1", true)) {
+                bankName = retailBankList[position].BankCode
+            } else {
+                if (corpBankList[position].Active.equals("1", true)) {
+                    bankName = corpBankList[position].BankCode
+                }
+            }
     }
 
     private fun paybyFPX() {
@@ -231,7 +240,7 @@ class FPXActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnIte
             requestMap["bank"] = bankName
             requestMap["buyerName"] = edit_contactName.text.toString()
 
-            Log.e("Map", ""+requestMap)
+            Log.e("Map", "" + requestMap)
             paymentActivity.jsonPayByFPX(requestMap)
 
         } catch (e: JSONException) {
